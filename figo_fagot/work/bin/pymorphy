@@ -1,0 +1,4 @@
+#!/Users/macbookssd/Desktop/LSTM_Habr/work/bin/python3.7
+import sys
+from pymorphy2 import cli
+sys.exit(cli.main())

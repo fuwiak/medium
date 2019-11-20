@@ -1,13 +1,14 @@
 #-*- coding: utf-8 -*-
 
-import urllib2
-from BeautifulSoup import BeautifulSoup
+import urllib.request
+from bs4 import BeautifulSoup
 import re
 import pandas as pd
 
 
 URLS = ['https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot.html', 
-'https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot,alfabetycznie,strona,2.html']
+'https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot,alfabetycznie,strona,2.html',
+'https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot,alfabetycznie,strona,3.html']
 
 
 class figo_fagot:
@@ -15,14 +16,14 @@ class figo_fagot:
 		self.URL = URL
 
 	def dane(self):
-		page = urllib2.urlopen(self.URL)
+		page = urllib.request.urlopen(self.URL)
 		soup = BeautifulSoup(page)
 		temp = soup.body.findAll('div', attrs={'class' : 'box-przeboje'})
 		return temp
 
 	def get_song_name(self):
 		names = []
-		page = urllib2.urlopen(self.URL)
+		page = urllib.request.urlopen(self.URL)
 		soup = BeautifulSoup(page)
 		temp = soup.body.findAll('div', attrs={'class' : 'box-przeboje'})
 		for song in temp:
@@ -32,7 +33,7 @@ class figo_fagot:
 
 	def text_song_url(self):
 		text_url = []
-		page = urllib2.urlopen(self.URL)
+		page = urllib.request.urlopen(self.URL)
 		soup = BeautifulSoup(page)
 		temp = soup.body.findAll('div', attrs={'class' : 'box-przeboje'})
 		for song in temp:
@@ -44,36 +45,23 @@ class figo_fagot:
 		text = []
 		URLS = self.text_song_url()
 		for URL in URLS:
-			page = urllib2.urlopen(URL)
+			page = urllib.request.urlopen(URL)
 			soup = BeautifulSoup(page)
-			temp = soup.body.findAll('div', attrs={'class' : 'song-text'})
+			temp = soup.body.findAll('div', attrs={'class' : 'box-przeboje'})
 			song_text = temp[0].text
 
 
 			text.append(song_text)
 		return text
 
-def save_to_pkl(obj, name_pkl):
-	import pickle
-	with open(name_pkl, "wb") as f:
-		pickle.dump(obj)
-
 
 A = figo_fagot(URLS[0])
 B = figo_fagot(URLS[1])
 
-save_to_pkl(A, "A.pkl")
-save_to_pkl(B, "B.pkl")
 
 
-
-
-
-
-
-
-# all_songs = A.text_song()+B.text_song()
-
+all_text_songs = A.text_song()+B.text_song()
+all_songs_names = A.get_song_name()+B.get_song_name()
 
 # song_all_text = ""
 # for text in all_songs:

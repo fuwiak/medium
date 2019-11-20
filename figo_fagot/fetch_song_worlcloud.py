@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-
+#python2.7
 import urllib2
 from BeautifulSoup import BeautifulSoup
 import re
@@ -7,7 +7,8 @@ import pandas as pd
 
 
 URLS = ['https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot.html', 
-'https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot,alfabetycznie,strona,2.html']
+'https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot,alfabetycznie,strona,2.html',
+'https://www.tekstowo.pl/piosenki_artysty,bracia_figo_fagot,alfabetycznie,strona,3.html']
 
 
 class figo_fagot:
@@ -41,32 +42,64 @@ class figo_fagot:
 		return text_url
 	
 	def text_song(self):
-		text = []
+		from BeautifulSoup import BeautifulSoup, NavigableString, Tag
+		TXT = []
+
 		URLS = self.text_song_url()
+
+		ind=0
 		for URL in URLS:
+
+			
+
 			page = urllib2.urlopen(URL)
 			soup = BeautifulSoup(page)
 			temp = soup.body.findAll('div', attrs={'class' : 'song-text'})
-			song_text = temp[0].text
 
+			
+			br_text = temp[0].findAll('br')
 
-			text.append(song_text)
-		return text
+			song_text = []
+			for br in br_text:
+				next_s = br.nextSibling
+
+				if not (next_s and isinstance(next_s,NavigableString)):
+					continue
+				next2_s = next_s.nextSibling
+			   	if next2_s and isinstance(next2_s,Tag) and next2_s.name == 'br':
+			   		text = str(next_s).strip()
+			   		text_line = text.split("\n")
+			   		for line in text_line:
+			   			song_text.append(line)
+
+			# print(ss)
+			# print(song_text)
+			# ind+=1
+			TXT.append(song_text)
+		return TXT
+
 
 
 
 
 A = figo_fagot(URLS[0])
 B = figo_fagot(URLS[1])
+C = figo_fagot(URLS[2])
 
-C = A.text_song()+B.text_song()
+D = A.text_song()+B.text_song()+C.text_song()
 
+names = A.get_song_name()+B.get_song_name()+C.get_song_name()
 
-song_all_text = ""
-for text in C:
-	text = text.replace("Tekst piosenki:","")
-	text = text.replace("nbsp","")
-	song_all_text+=text+" "
+df = pd.DataFrame()
+df['names']=names
+df['text'] = D
+df.to_csv("df.csv", encoding = 'utf-8')
+
+# song_all_text = ""
+# for text in C:
+# 	text = text.replace("Tekst piosenki:","")
+# 	text = text.replace("nbsp","")
+# 	song_all_text+=text+" "
 
 
 
