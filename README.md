@@ -2,6 +2,7 @@
 # Filozofia disco polo na przykładzie twórczości zespołu Figo-Fagot. Podejście analityczne.
 
 https://medium.com/@stasinskipawel/filozofia-disco-polo-na-przykładzie-twórczości-zespołu-figo-fagot-podejście-analityczne-ef52a8e4896f
+
 Files or directories:
 - figo_fagot
 
