@@ -54,7 +54,7 @@ tornado==6.0.3
 tqdm==4.36.1
 umap-learn==0.3.10
 Unidecode==1.1.1
-urllib3==1.25.6
+urllib3==1.26.5
 visdom==0.1.8.9
 webrtcvad==2.0.10
 websocket-client==0.56.0
